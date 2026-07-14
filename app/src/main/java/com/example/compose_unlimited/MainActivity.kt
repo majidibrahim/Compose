@@ -27,10 +27,13 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.compose_unlimited.Compose_Foundation.Text.Basic_Text
+import com.example.compose_unlimited.Compose_Foundation.Text.Basic_Text_Field
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,10 +41,19 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             var value by rememberSaveable { mutableStateOf("") }
+            var scaleCheck by rememberSaveable {mutableStateOf(3f)}
             Greeting(
                 textValue = value,
                 onValueChange = { value = it },
-                modifier = Modifier
+                modifier = Modifier,
+                onClick = {
+                    if (scaleCheck <= 1){
+                        scaleCheck += 2f
+                    }else{
+                        scaleCheck -= 0.5f
+                    }
+                },
+                scaleCheck = scaleCheck
             )
 
         }
@@ -49,30 +61,22 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(modifier: Modifier, textValue:String, onValueChange:(String) -> Unit) {
+fun Greeting(
+    modifier: Modifier,
+    textValue:String,
+    onValueChange:(String) -> Unit,
+    onClick:()-> Unit,
+    scaleCheck: Float
+) {
     Column(
-        modifier.fillMaxSize().padding(top = 64.dp),
+        modifier
+            .fillMaxSize()
+            .padding(top = 64.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
 
     ){
-        BasicText(
-            text = buildAnnotatedString {
-                withStyle(SpanStyle(color = Color.Blue)){
-                    append("@Majid")
-                }
-                withStyle(SpanStyle(color = Color.Black)){
-                    append(" Ibrahim")
-                }
-            },
-            style = myStyle
-        )
-        BasicTextField(
-            value = textValue,
-            onValueChange = { onValueChange(it) },
-            textStyle = myStyle,
-            maxLines = 1
-        )
-
+        Basic_Text(onClick = { onClick() }, scaleF = scaleCheck)
+        Basic_Text_Field(text = textValue, onValueChange = onValueChange)
     }
 }
 
